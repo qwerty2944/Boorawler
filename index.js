@@ -27,8 +27,13 @@ const crawler = async () => {
 
     
     await Promise.all([
-        // page1.click(3000),//??로이동
+        page1.click('#menuLink264'),//먹방수다이동
         page2.click('#menuLink264'),//먹방수다이동
+    ])
+
+    await Promise.all([
+        page1.waitFor(8000),//3초 대기후
+        page2.waitFor(8000),//3초 대기후
     ])
 
 
