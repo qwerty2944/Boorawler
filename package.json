@@ -1,0 +1,22 @@
+{
+  "name": "boorawler",
+  "version": "1.0.0",
+  "description": "부롤러 2021",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qwerty2944/Boorawler.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/qwerty2944/Boorawler/issues"
+  },
+  "homepage": "https://github.com/qwerty2944/Boorawler#readme",
+  "dependencies": {
+    "puppeteer": "^9.0.0"
+  }
+}
