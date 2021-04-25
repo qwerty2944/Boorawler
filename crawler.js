@@ -1,3 +1,6 @@
+const electron = require("electron")
+const ipc = electron.ipcRenderer
+
 const fs = require("fs")
 // const cheerio = require('cheerio')
 const puppeteer = require("puppeteer")
@@ -45,4 +48,6 @@ const crawler = async () => {
     console.log("부롤러2021 정지")
 }
 
-crawler();
+const crawlBtn = document.getElementById("crawlButton")
+crawlBtn.addEventListener('click' , crawler())
+// module.exports = crawler
