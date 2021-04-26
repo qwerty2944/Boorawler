@@ -2,52 +2,66 @@ const electron = require("electron")
 const ipc = electron.ipcRenderer
 
 const fs = require("fs")
-// const cheerio = require('cheerio')
+const axios = require("axios")
+const cheerio = require('cheerio')
 const puppeteer = require("puppeteer")
 
 
 const crawler = async () => {
-    const browser = await puppeteer.launch({headless : process.env.NODE_ENV ==='production'}); //배포환경에서는 화면안보이게
-    console.log("부롤러2021 작동")
-    
+    try{
+    Target = "https://cafe.naver.com/ArticleList.nhn?search.clubid=27745269&search.menuid=264&search.boardtype=L"
+    const response = await axios.get(Target);
 
-    const [page1, page2] = await Promise.all([ //동시에 열고
-        browser.newPage(),
-        browser.newPage()
-    ]);
+    console.log(response.status)
 
-    await Promise.all([ //동시에 여는건 순서대로 열필요 없음
-        page1.goto('https://cafe.naver.com/culturebloom'), //이동할 사이트
-        page2.goto('https://cafe.naver.com/culturebloom') //이동할 사이트
-    ]);
+    if (response.status === 200){//응답이 성공한경우
+        const html = response.data;
+        // console.log(html)
+        const $ = cheerio.load(html);
+        const number = $('.inner_number').text();
+        // console.log(number)
 
-
-
-    await Promise.all([
-        page1.waitFor(3000),//3초 대기후
-        page2.waitFor(3000),//3초 대기후
-    ])
-
-    
-    await Promise.all([
-        page1.click('#menuLink264'),//먹방수다이동
-        page2.click('#menuLink264'),//먹방수다이동
-    ])
-
-    await Promise.all([
-        page1.waitFor(8000),//3초 대기후
-        page2.waitFor(8000),//3초 대기후
-    ])
+        return number
+        
+    } else {
+        console.log("실패")
+    }
 
 
-    await page1.close(); // 창1페이지닫기
-    await page2.close(); // 창2페이지닫기
-
-
-    await browser.close() // 브라우저 끄기
-    console.log("부롤러2021 정지")
+    } catch(e) {
+        console.log(e)
+    }
 }
 
-const crawlBtn = document.getElementById("crawlButton")
-crawlBtn.addEventListener('click' , crawler())
+
+
+
+
+
+let lastresult
+// var Btn = window.document.createElement("button")
+// Btn.innerHTML = "크롤링구동" 버튼생성이 왜안되는지 잘모르겠음
+
+const Btn = window.document.getElementById("CB")
+const Last = window.document.getElementById("LAST")
+
+// console.log(Btn)
+Btn.addEventListener('click' , function(){
+    console.log("함수호출")
+    lanum = crawler()
+
+    
+    console.log("호호")
+    console.log(lanum)
+    lanum.then(
+        result => lastresult=result
+    )
+    
+    // console.log(typeof(lanum))
+    Last.innerHTML = lastresult
+})
+
+
+
+
 // module.exports = crawler

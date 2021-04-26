@@ -12,3 +12,4 @@
 ## 04/25
 * electron 테스팅
 * electron 에 버튼달아서 크롤링 작동하기
+* https://github.com/TaeSeungRyu/sample/tree/main/%EC%9D%BC%EB%A0%89%ED%8A%B8%EB%A1%A0%20%EC%83%98%ED%94%8C%20%EC%BD%94%EB%93%9C 참조

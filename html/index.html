@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>BOOrawler 1.0.1</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+
 </head>
 <body style="background: white;">
     
-    <script>
+    <!-- <script>
+    // You can also require other files to run in this process
+    require('../crawler.js')
+    </script> -->
+
+      <button id="CB">크롤러구동</button>
+      <h1 id="LAST">마지막글번호</h1>
+      <script>
         // You can also require other files to run in this process
-        require('./crawler.js')
-      </script>
-      <button id="crawlButton">크롤러구동</button>
+        require('../crawler.js')
+    </script>
+
 </body>
 </html>
