@@ -1,32 +1,59 @@
 const electron = require("electron")
 const ipc = electron.ipcRenderer
 
-const fs = require("fs")
-const axios = require("axios")
+// const fs = require("fs")
+// const axios = require("axios")
 const cheerio = require('cheerio')
-const puppeteer = require("puppeteer")
+// const puppeteer = require("puppeteer")
+// const iconv = require('iconv-lite')
+// const Iconv1 = require('iconv').Iconv;
+const sanitizeHtml = require('sanitize-html')
+const request = require('request');
 
+// const iconv1 = new Iconv1('bin','utf-8')
+
+//태그 선택 체이닝 https://www.zerocho.com/category/jQuery/post/57a9abece6cb6015004403a8
 
 const crawler = async () => {
     try{
-    Target = "https://cafe.naver.com/ArticleList.nhn?search.clubid=27745269&search.menuid=264&search.boardtype=L"
-    const response = await axios.get(Target);
+    const url = "https://cafe.naver.com/ArticleList.nhn?search.clubid=27745269&search.menuid=264&search.boardtype=L"
+    
+    request({
+        url: "https://cafe.naver.com/ArticleList.nhn?search.clubid=27745269&search.menuid=264&search.boardtype=L",
+        method: 'GET',
+        encoding: null,
+      }, (error, response, body) => {
+        const decodedResult = iconv.decode(body, 'euc-kr');
+        const $ = cheerio.load(decodedResult);
 
-    console.log(response.status)
+        const countnumbertags = $('.inner_number').length
+        console.log(countnumbertags)
 
-    if (response.status === 200){//응답이 성공한경우
-        const html = response.data;
-        // console.log(html)
-        const $ = cheerio.load(html);
-        const number = $('.inner_number').text();
-        // console.log(number)
 
-        return number
+        numbertag = $('.inner_number').eq(countnumbertags-1).text()
+
+        titletag = $('.inner_number').eq(countnumbertags-1).parent().parent().find('a').text().trim();   
+        split_titletag = titletag.split("  ")
+        split_titletag = split_titletag.filter( v => v != "")
+        split_titletag = split_titletag.filter( v => v != "\n").filter( v => v != "\n\n")
+        split_titletag = split_titletag.join()
+
+        nametag = sanitizeHtml( $('.inner_number').eq(countnumbertags-1).parent().parent().parent().find('td').eq(1).find('a').text() )
         
-    } else {
-        console.log("실패")
-    }
+        timetag = sanitizeHtml( $('.inner_number').eq(countnumbertags-1).parent().parent().parent().find('td').eq(3).text() )
 
+        console.log(numbertag)
+        console.log(split_titletag);
+        console.log(nametag)
+        console.log(timetag)
+        
+
+        // console.log(titletags);
+        // console.log(writertags)
+        // console.log(datetags)
+      });
+
+      
 
     } catch(e) {
         console.log(e)
@@ -47,18 +74,18 @@ const Last = window.document.getElementById("LAST")
 
 // console.log(Btn)
 Btn.addEventListener('click' , function(){
-    console.log("함수호출")
+   
     lanum = crawler()
-
     
-    console.log("호호")
-    console.log(lanum)
+    
+
     lanum.then(
         result => lastresult=result
     )
-    
-    // console.log(typeof(lanum))
     Last.innerHTML = lastresult
+   
+    // console.log(typeof(lanum))
+    
 })
 
 
