@@ -1,6 +1,3 @@
-const electron = require("electron")
-const ipc = electron.ipcRenderer
-
 // const fs = require("fs")
 // const axios = require("axios")
 const cheerio = require('cheerio')
@@ -9,6 +6,8 @@ const iconv = require('iconv-lite')
 // const Iconv1 = require('iconv').Iconv;
 const sanitizeHtml = require('sanitize-html')
 const request = require('request');
+const fs = require("fs");
+const dataPath = "./product.json";
 
 // const iconv1 = new Iconv1('bin','utf-8')
 
@@ -27,30 +26,49 @@ const crawler = async () => {
         const $ = cheerio.load(decodedResult);
 
         const countnumbertags = $('.inner_number').length
-        console.log(countnumbertags)
+        //console.log(countnumbertags)
 
+        let dataArr = []
 
-        numbertag = $('.inner_number').eq(countnumbertags-1).text()
+        for (i=0; i<countnumbertags; i++){
 
-        titletag = $('.inner_number').eq(countnumbertags-1).parent().parent().find('a').text().trim();   
+        numbertag = $('.inner_number').eq(i).text()
+
+        titletag = $('.inner_number').eq(i).parent().parent().find('a').text().trim();   
         split_titletag = titletag.split("  ")
         split_titletag = split_titletag.filter( v => v != "")
         split_titletag = split_titletag.filter( v => v != "\n").filter( v => v != "\n\n")
         split_titletag = split_titletag.join()
+        split_titletag = split_titletag.replace("\n","")
 
-        nametag = sanitizeHtml( $('.inner_number').eq(countnumbertags-1).parent().parent().parent().find('td').eq(1).find('a').text() )
+        nametag = sanitizeHtml( $('.inner_number').eq(i).parent().parent().parent().find('td').eq(1).find('a').text() )
         
-        timetag = sanitizeHtml( $('.inner_number').eq(countnumbertags-1).parent().parent().parent().find('td').eq(3).text() )
+        timetag = sanitizeHtml( $('.inner_number').eq(i).parent().parent().parent().find('td').eq(3).text() )
 
-        console.log(numbertag)
-        console.log(split_titletag);
-        console.log(nametag)
-        console.log(timetag)
+        // console.log(numbertag)
+        // console.log(split_titletag);
+        // console.log(nametag)
+        // console.log(timetag)
+        
+        var data = {
+          number: numbertag,
+          title: split_titletag,
+          name: nametag,
+          time: timetag
+        };
+        
+        dataArr.push(data)
         
 
+        }
+
+        
+
+        fs.writeFileSync(dataPath, JSON.stringify(dataArr))
+     
+        
       });
-
-      return numbertag
+    
 
     } catch(e) {
         console.log(e)
@@ -59,33 +77,4 @@ const crawler = async () => {
 
 
 
-
-
-
-let lastresult
-// var Btn = window.document.createElement("button")
-// Btn.innerHTML = "크롤링구동" 버튼생성이 왜안되는지 잘모르겠음
-
-const Btn = window.document.getElementById("CB")
-const Last = window.document.getElementById("LAST")
-
-// console.log(Btn)
-Btn.addEventListener('click' , function(){
-   
-    lanum = crawler()
-    
-    
-
-    lanum.then(
-        result => lastresult=result
-    )
-    Last.innerHTML = lastresult
-   
-    // console.log(typeof(lanum))
-    
-})
-
-
-
-
-// module.exports = crawler
+module.exports = crawler

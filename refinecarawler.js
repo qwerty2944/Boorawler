@@ -1,6 +1,3 @@
-const electron = require("electron")
-const ipc = electron.ipcRenderer
-
 // const fs = require("fs")
 // const axios = require("axios")
 const cheerio = require('cheerio')
@@ -29,6 +26,7 @@ const crawler = async () => {
         const countnumbertags = $('.inner_number').length
         console.log(countnumbertags)
 
+        
 
         numbertag = $('.inner_number').eq(countnumbertags-1).text()
 
@@ -37,6 +35,7 @@ const crawler = async () => {
         split_titletag = split_titletag.filter( v => v != "")
         split_titletag = split_titletag.filter( v => v != "\n").filter( v => v != "\n\n")
         split_titletag = split_titletag.join()
+        split_titletag = split_titletag.replace("\n","")
 
         nametag = sanitizeHtml( $('.inner_number').eq(countnumbertags-1).parent().parent().parent().find('td').eq(1).find('a').text() )
         
@@ -47,45 +46,22 @@ const crawler = async () => {
         console.log(nametag)
         console.log(timetag)
         
+        var data ={
+          number: numbertag,
+          title: split_titletag,
+          name: nametag,
+          time: timetag
+        }
 
       });
 
-      return numbertag
+    
 
     } catch(e) {
         console.log(e)
     }
 }
 
+crawler()
 
-
-
-
-
-let lastresult
-// var Btn = window.document.createElement("button")
-// Btn.innerHTML = "크롤링구동" 버튼생성이 왜안되는지 잘모르겠음
-
-const Btn = window.document.getElementById("CB")
-const Last = window.document.getElementById("LAST")
-
-// console.log(Btn)
-Btn.addEventListener('click' , function(){
-   
-    lanum = crawler()
-    
-    
-
-    lanum.then(
-        result => lastresult=result
-    )
-    Last.innerHTML = lastresult
-   
-    // console.log(typeof(lanum))
-    
-})
-
-
-
-
-// module.exports = crawler
+module.exports = crawler
